@@ -1,0 +1,215 @@
+import javax.swing.*;
+import javax.swing.filechooser.FileSystemView;
+import javax.swing.text.DefaultEditorKit;
+import javax.swing.text.StyledEditorKit;
+import java.awt.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class Textedit {
+    private final JFrame frame;
+    //private JTextArea textArea;
+    private JEditorPane textArea;
+
+    Textedit() {
+        frame = new JFrame("Simple Text Editor");
+
+        MakeContentPane();
+        MakeMenubar();
+
+        frame.pack();
+        frame.setVisible(true);
+        frame.setSize(800, 400);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    public void MakeMenubar() {
+        JMenuBar menubar = new JMenuBar();
+        frame.setJMenuBar(menubar);
+
+        // create the File menu
+        JMenu fileMenu = new JMenu("File");
+        menubar.add(fileMenu);
+
+        JMenu editMenu = new JMenu("Edit");
+        menubar.add(editMenu);
+
+        /*JMenu fontMenu = new JMenu("Font");
+        menubar.add(fontMenu);*/
+
+        JMenu alignmentMenu = new JMenu("Alignment");
+        menubar.add(alignmentMenu);
+
+        /*JMenu aboutMenu = new JMenu("About"); // TODO: Create about popup windowd
+        menubar.add(aboutMenu);*/
+
+        JMenuItem quitItem = new JMenuItem("Quit");
+        quitItem.addActionListener((e) -> System.exit(1));
+
+        JMenuItem openItem = new JMenuItem("Open");
+        openItem.addActionListener((e) -> Open());
+
+        JMenuItem saveAsItem = new JMenuItem("Save");
+        saveAsItem.addActionListener((e) -> SaveAs());
+
+        fileMenu.add(openItem);
+        fileMenu.add(saveAsItem);
+        fileMenu.add(quitItem);
+
+        Action action = new StyledEditorKit.BoldAction();
+        Action action1 = new StyledEditorKit.UnderlineAction();
+        Action action2 = new StyledEditorKit.ItalicAction();
+        Action action3 = new DefaultEditorKit.CopyAction();
+        Action action4 = new DefaultEditorKit.CutAction();
+        Action action5 = new DefaultEditorKit.PasteAction();
+
+        Action action6 = new StyledEditorKit.FontSizeAction("increase", +4);
+        Action action7 = new StyledEditorKit.FontSizeAction("decrease", -4);
+
+        Action action8 = new StyledEditorKit.AlignmentAction("right", 2);
+        Action action9 = new StyledEditorKit.AlignmentAction("center", 1);
+        Action action10 = new StyledEditorKit.AlignmentAction("left", 0);
+
+        Action action11= new StyledEditorKit.ForegroundAction("Red",
+                Color.red);
+        Action action12= new StyledEditorKit.ForegroundAction("Green",
+                Color.green);
+        Action action13= new StyledEditorKit.ForegroundAction("Blue",
+                Color.blue);
+        Action action14= new StyledEditorKit.ForegroundAction("Black",
+                Color.black);
+        Action action15 = new StyledEditorKit.ForegroundAction("DarkGray",
+                Color.darkGray);
+
+        Action action16 = new StyledEditorKit.FontFamilyAction("SansSerif",
+                "SansSerif");
+        Action action17 = new StyledEditorKit.FontFamilyAction("Serif",
+                "Serif");
+        /*Action action18 = new StyledEditorKit.FontFamilyAction("Abadi MT Condensed Extra Bold",
+                "Abadi MT Condensed Extra Bold");
+        Action action19 = new StyledEditorKit.FontFamilyAction("Academy Engraved LET",
+                "Academy Engraved LET");
+        Action action20 = new StyledEditorKit.FontFamilyAction("CAl Bayan",
+                "CAl Bayan");
+        Action action21 = new StyledEditorKit.FontFamilyAction("American Typewriter",
+                "American Typewriter");*/
+
+        action.putValue(Action.NAME, "Bold");
+        action1.putValue(Action.NAME, "Underline");
+        action2.putValue(Action.NAME, "Itallic");
+        action3.putValue(Action.NAME, "Copy");
+        action4.putValue(Action.NAME, "Cut");
+        action5.putValue(Action.NAME, "Paste");
+
+        action6.putValue(Action.NAME, "Increase");
+        action7.putValue(Action.NAME, "Decrease");
+
+        action8.putValue(Action.NAME, "Right");
+        action9.putValue(Action.NAME, "center");
+        action10.putValue(Action.NAME, "Left");
+
+        action11.putValue(Action.NAME, "Red");
+        action12.putValue(Action.NAME, "Green");
+        action13.putValue(Action.NAME, "Blue");
+        action14.putValue(Action.NAME, "Black");
+        action15.putValue(Action.NAME, "DarkGray");
+
+        action16.putValue(Action.NAME, "SansSerif");
+        action17.putValue(Action.NAME, "Serif");
+        /*action18.putValue(Action.NAME, "Abadi MT Condensed Extra Bold");
+        action19.putValue(Action.NAME, "Academy Engraved LET");
+        action20.putValue(Action.NAME, "CAl Bayan");
+        action21.putValue(Action.NAME, "American Typewriter");*/
+
+        editMenu.add(action);
+        editMenu.add(action1);
+        editMenu.add(action2);
+        editMenu.add(action3);
+        editMenu.add(action4);
+        editMenu.add(action5);
+        editMenu.addSeparator();
+        editMenu.add(action11);
+        editMenu.add(action12);
+        editMenu.add(action13);
+        editMenu.add(action14);
+        editMenu.add(action15);
+        editMenu.addSeparator();
+        editMenu.add(action16);
+        editMenu.add(action17);
+        /*editMenu.add(action18);
+        editMenu.add(action19);
+        editMenu.add(action20);
+        editMenu.add(action21);
+
+        fontMenu.add(action6);
+        fontMenu.add(action7);*/
+
+        alignmentMenu.add(action8);
+        alignmentMenu.add(action9);
+        alignmentMenu.add(action10);
+
+        /*jMenu = new JMenu("Edit");
+        addAction(new DefaultEditorKit.CutAction(), KeyEvent.VK_X, "Cut" );
+        addAction(new DefaultEditorKit.CopyAction(), KeyEvent.VK_C, "Copy" );
+        addAction(new DefaultEditorKit.PasteAction(), KeyEvent.VK_V, "Paste" );
+        addAction(new StyledEditorKit.BoldAction(), KeyEvent.VK_B, "Bold" );
+        addAction(new StyledEditorKit.UnderlineAction(), KeyEvent.VK_U, "Underline" );
+        addAction(new StyledEditorKit.ItalicAction(), KeyEvent.VK_I, "Itallic" );*/
+
+    }
+    public void MakeContentPane() {
+        //textArea = new JTextArea();
+        textArea = new JEditorPane("text/html", "");
+
+        Container contentPane = frame.getContentPane();
+
+        contentPane.setLayout(new BorderLayout());
+        contentPane.add(textArea, BorderLayout.CENTER);
+        /*JButton boldItem = new JButton("Bold"); //TODO Create action
+        JButton italicItem = new JButton("Italic"); //TODO Create action
+        JButton underLineItem = new JButton("Underline"); //TODO Create action
+        JButton copyItem = new JButton("Copy"); //TODO Create action
+        JButton cutItem = new JButton("Cut"); //TODO Create action
+        JButton pasteItem = new JButton("Paste"); //TODO Create action
+
+        JPanel buttons = new JPanel();
+        buttons.setLayout(new GridLayout(1,3));
+        buttons.add(boldItem);
+        buttons.add(italicItem);
+        buttons.add(underLineItem);
+        buttons.add(copyItem);
+        buttons.add(cutItem);
+        buttons.add(pasteItem);
+
+        contentPane.add(buttons, BorderLayout.NORTH);*/
+    }
+    public void SaveAs() {
+
+        final JFileChooser SaveAs = new JFileChooser();
+        SaveAs.setApproveButtonText("Save");
+        int actionDialog = SaveAs.showOpenDialog(frame);
+        if (actionDialog != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+
+        File fileName = new File(SaveAs.getSelectedFile() + ".html");
+        try (BufferedWriter outFile = new BufferedWriter(new FileWriter(fileName))) {
+
+            textArea.write(outFile);
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void Open() {
+        // TODO: Create method to open files
+        JFileChooser Open = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+    }
+    public static void main(String[] args) {
+        Textedit frame = new Textedit();
+    }
+}
+
